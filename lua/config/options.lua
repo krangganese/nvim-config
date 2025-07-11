@@ -3,11 +3,11 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
 -- tampilkan nomor baris
-vim.opt.number = true              -- tampilkan nomor baris
-vim.opt.relativenumber = true     -- nomor relatif untuk navigasi cepat
+vim.opt.number = true            -- tampilkan nomor baris
+vim.opt.relativenumber = true    -- nomor relatif untuk navigasi cepat
 
 -- indentasi
-vim.opt.tabstop = 2               -- lebar tab = 2 spasi
+vim.opt.tabstop = 2              -- lebar tab = 2 spasi
 vim.opt.shiftwidth = 2           -- indentasi otomatis = 2 spasi
 vim.opt.expandtab = true         -- konversi tab jadi spasi
 vim.opt.smartindent = true       -- indentasi otomatis yang cerdas
