@@ -2,7 +2,15 @@
 require('mason').setup()
 require('mason-lspconfig').setup({
   ensure_installed = {
-    'rust_analyzer',   
+    'rust_analyzer',
+    'eslint',
+    'cssls',
+    'ts_ls',
+    'lua_ls',
+    'tailwindcss',
+    'html',
+    'css_variables',
+    'cssmodules_ls',
   },
 })
 
