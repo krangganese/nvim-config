@@ -1,7 +1,7 @@
 require("config.lazy")
-require("config.keymaps")
 require("config.file-explorer").setup()
 require("config.theme").setup()
 require("config.lsp")
 require("config.hardtime").setup()
+require("config.options")
 require("config.keymaps")

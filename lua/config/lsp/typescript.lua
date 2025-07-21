@@ -52,4 +52,5 @@ filetypes = {
     if client.server_capabilities.semanticTokensProvider and client.supports_method('textDocument/semanticTokens/full') then
       vim.lsp.semantic_tokens.start(bufnr, client.id)
     end
-  end}
+  end
+}
