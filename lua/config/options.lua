@@ -12,8 +12,6 @@ vim.opt.shiftwidth = 2           -- indentasi otomatis = 2 spasi
 vim.opt.expandtab = true         -- konversi tab jadi spasi
 vim.opt.smartindent = true       -- indentasi otomatis yang cerdas
 vim.opt.autoindent = true
-vim.opt.cindent = true
-vim.opt.cinoptions = "(0"
 
 -- tampilan
 vim.opt.termguicolors = true     -- aktifkan warna GUI
