@@ -177,6 +177,8 @@ function M.setup()
 		html = {},
 		tailwindcss = {},
 		vuels = {},
+		prettierd = {},
+		prettier = {},
 	}
 
 	local ensure_installed = vim.tbl_keys(servers or {})
