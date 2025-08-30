@@ -162,6 +162,7 @@ function M.setup()
 	})
 
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
+	local util = require("lspconfig.util")
 
 	local servers = {
 		bashls = {},
@@ -169,7 +170,49 @@ function M.setup()
 		clangd = {},
 		["clang-format"] = {},
 		lua_ls = {},
-		ts_ls = {},
+		ts_ls = {
+			root_dir = function(fname)
+				return util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git")(fname)
+					or vim.fn.getcwd()
+			end,
+			filetypes = {
+				"javascript",
+				"javascriptreact",
+				"javascript.jsx",
+				"typescript",
+				"typescriptreact",
+				"typescript.tsx",
+			},
+			init_options = {
+				preferences = {
+					includeCompletionsForModuleExports = true,
+				},
+				hostInfo = "neovim",
+			},
+			settings = {
+				javascript = {
+					validate = {
+						enable = true,
+					},
+					implicitProjectConfig = {
+						checkJs = true,
+					},
+				},
+				typescript = {
+					validate = {
+						enable = true,
+					},
+				},
+			},
+			on_attach = function(client, bufnr)
+				if
+					client.server_capabilities.semanticTokensProvider
+					and client.supports_method("textDocument/semanticTokens/full")
+				then
+					vim.lsp.semantic_tokens.start(bufnr, client.id)
+				end
+			end,
+		},
 		cssls = {},
 		css_variables = {},
 		cssmodules_ls = {},
@@ -203,12 +246,12 @@ function M.setup()
 	})
 
 	-- Load individual LSP config inside `lsp/` directory
-	local lsp_path = vim.fn.stdpath("config") .. "/lua/config/lsp"
-	for _, file in ipairs(vim.fn.readdir(lsp_path)) do
-		if file:match("%.lua$") and file ~= "init.lua" then
-			require("config.lsp." .. file:gsub("%.lua$", ""))
-		end
-	end
+	-- local lsp_path = vim.fn.stdpath("config") .. "/lua/config/lsp"
+	-- for _, file in ipairs(vim.fn.readdir(lsp_path)) do
+	-- 	if file:match("%.lua$") and file ~= "init.lua" then
+	-- 		require("config.lsp." .. file:gsub("%.lua$", ""))
+	-- 	end
+	-- end
 end
 
 return M
