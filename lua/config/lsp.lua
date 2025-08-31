@@ -1,23 +1,3 @@
--- -- Load mason.nvim and mason-lspconfig.nvim
--- require('mason').setup()
--- require('mason-lspconfig').setup({
---   ensure_installed = {
---     'rust_analyzer',
---     'eslint',
---     'cssls',
---     'ts_ls',
---     'lua_ls',
---     'tailwindcss',
---     'html',
---     'css_variables',
---     'cssmodules_ls',
---   },
--- })
---
---
--- local lspconfig = require('lspconfig')
---
-
 local M = {}
 
 function M.setup()
@@ -161,7 +141,8 @@ function M.setup()
 		},
 	})
 
-	local capabilities = vim.lsp.protocol.make_client_capabilities()
+	local client_capabilities = vim.lsp.protocol.make_client_capabilities()
+	local capabilities = require("blink.cmp").get_lsp_capabilities(client_capabilities)
 	local util = require("lspconfig.util")
 
 	local servers = {
