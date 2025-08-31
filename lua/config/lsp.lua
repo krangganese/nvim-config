@@ -145,94 +145,99 @@ function M.setup()
 	local capabilities = require("blink.cmp").get_lsp_capabilities(client_capabilities)
 	local util = require("lspconfig.util")
 
+	-- TSLS + Vue settings
+	local vue_language_server_path = vim.fn.stdpath("data")
+		.. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
+	local tsserver_filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" }
+	local vue_plugin = {
+		name = "@vue/typescript-plugin",
+		location = vue_language_server_path,
+		languages = { "vue" },
+		configNamespace = "typescript",
+	}
+	local ts_ls_config = {
+		root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git")(fname)
+			or vim.fn.getcwd(),
+		filetypes = tsserver_filetypes,
+		init_options = {
+			preferences = {
+				includeCompletionsForModuleExports = true,
+			},
+			hostInfo = "neovim",
+			plugins = {
+				vue_plugin,
+			},
+		},
+		-- on_attach = function(client)
+		-- 	if vim.bo.filetype == "vue" then
+		-- 		existing_capabilities.semanticTokensProvider.full = false
+		-- 	else
+		-- 		existing_capabilities.semanticTokensProvider.full = true
+		-- 	end
+		-- end,
+
+		on_attach = function(client, bufnr)
+			print("ts_ls attached to buffer " .. bufnr)
+		end,
+	}
+
+	local vue_ls_config = {}
+
 	local servers = {
+		-- Bash
 		bashls = {},
+
+		-- C, C#, C++
 		cmake = {},
 		clangd = {},
-		["clang-format"] = {},
-		lua_ls = {},
-		ts_ls = {
-			root_dir = function(fname)
-				return util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git")(fname)
-					or vim.fn.getcwd()
-			end,
-			filetypes = {
-				"javascript",
-				"javascriptreact",
-				"javascript.jsx",
-				"typescript",
-				"typescriptreact",
-				"typescript.tsx",
-			},
-			init_options = {
-				preferences = {
-					includeCompletionsForModuleExports = true,
-				},
-				hostInfo = "neovim",
-			},
-			settings = {
-				javascript = {
-					validate = {
-						enable = true,
-					},
-					implicitProjectConfig = {
-						checkJs = true,
-					},
-				},
-				typescript = {
-					validate = {
-						enable = true,
-					},
-				},
-			},
+
+		-- Lua
+		lua_ls = {
 			on_attach = function(client, bufnr)
-				if
-					client.server_capabilities.semanticTokensProvider
-					and client.supports_method("textDocument/semanticTokens/full")
-				then
-					vim.lsp.semantic_tokens.start(bufnr, client.id)
-				end
+				print("lua_ls attached to buffer " .. bufnr)
 			end,
 		},
-		cssls = {},
-		css_variables = {},
-		cssmodules_ls = {},
+
+		-- TS & JS related
+		ts_ls = ts_ls_config,
+		vue_ls = vue_ls_config,
 		eslint = {},
-		html = {},
-		tailwindcss = {},
-		vuels = {},
-		prettierd = {},
-		prettier = {},
+
+		-- HTML & CSS
+		-- cssls = {},
+		-- css_variables = {},
+		-- cssmodules_ls = {},
+		html = {
+			filetypes = {
+				"html",
+				"ejs",
+			},
+		},
+		-- tailwindcss = {},
 	}
 
 	local ensure_installed = vim.tbl_keys(servers or {})
 	vim.list_extend(ensure_installed, {
 		"stylua", -- Used to format Lua code
+		'prettierd', -- Used to format Node.js related code
+		'prettier', -- Used to format Node.js related code
+		"clang-format", -- Used to format C, C++, C# code
 	})
 	require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 	require("mason-lspconfig").setup({
 		ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
 		automatic_installation = false,
-		handlers = {
-			function(server_name)
-				local server = servers[server_name] or {}
-				-- This handles overriding only values explicitly passed
-				-- by the server configuration above. Useful when disabling
-				-- certain features of an LSP (for example, turning off formatting for ts_ls)
-				server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-				require("lspconfig")[server_name].setup(server)
-			end,
-		},
 	})
 
-	-- Load individual LSP config inside `lsp/` directory
-	-- local lsp_path = vim.fn.stdpath("config") .. "/lua/config/lsp"
-	-- for _, file in ipairs(vim.fn.readdir(lsp_path)) do
-	-- 	if file:match("%.lua$") and file ~= "init.lua" then
-	-- 		require("config.lsp." .. file:gsub("%.lua$", ""))
-	-- 	end
-	-- end
+	for server_name, server in pairs(servers) do
+		server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+
+		vim.lsp.config(server_name, server)
+		if server_name == "vue_ls" then
+			vim.lsp.enable({ "ts_ls", server_name })
+		end
+	end
 end
 
 return M
