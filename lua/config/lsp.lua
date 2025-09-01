@@ -156,8 +156,6 @@ function M.setup()
 		configNamespace = "typescript",
 	}
 	local ts_ls_config = {
-		root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git")(fname)
-			or vim.fn.getcwd(),
 		filetypes = tsserver_filetypes,
 		init_options = {
 			preferences = {
@@ -168,17 +166,6 @@ function M.setup()
 				vue_plugin,
 			},
 		},
-		-- on_attach = function(client)
-		-- 	if vim.bo.filetype == "vue" then
-		-- 		existing_capabilities.semanticTokensProvider.full = false
-		-- 	else
-		-- 		existing_capabilities.semanticTokensProvider.full = true
-		-- 	end
-		-- end,
-
-		on_attach = function(client, bufnr)
-			print("ts_ls attached to buffer " .. bufnr)
-		end,
 	}
 
 	local vue_ls_config = {}
@@ -189,14 +176,30 @@ function M.setup()
 
 		-- C, C#, C++
 		cmake = {},
-		clangd = {},
+		clangd = {
+			root_dir = function(bufnr, on_dir)
+				local root_markers = {
+					".clangd",
+					".clang-tidy",
+					".clang-format",
+					"compile_commands.json",
+					"compile_flags.txt",
+					"configure.ac",
+					".git",
+					"Makefile",
+				}
+				root_markers = vim.fn.has("nvim-0.11.3") == 1 and { root_markers } or root_markers
+				local project_root = vim.fs.root(bufnr, root_markers)
+				if not project_root then
+					return
+				end
 
-		-- Lua
-		lua_ls = {
-			on_attach = function(client, bufnr)
-				print("lua_ls attached to buffer " .. bufnr)
+				on_dir(project_root)
 			end,
 		},
+
+		-- Lua
+		lua_ls = {},
 
 		-- TS & JS related
 		ts_ls = ts_ls_config,
@@ -219,8 +222,8 @@ function M.setup()
 	local ensure_installed = vim.tbl_keys(servers or {})
 	vim.list_extend(ensure_installed, {
 		"stylua", -- Used to format Lua code
-		'prettierd', -- Used to format Node.js related code
-		'prettier', -- Used to format Node.js related code
+		"prettierd", -- Used to format Node.js related code
+		"prettier", -- Used to format Node.js related code
 		"clang-format", -- Used to format C, C++, C# code
 	})
 	require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
