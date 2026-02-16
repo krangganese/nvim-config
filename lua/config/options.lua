@@ -43,3 +43,7 @@ vim.opt.splitright = true -- split vertikal di kanan
 
 -- floating window
 vim.opt.winborder = "rounded" -- default border untuk semua floating windows
+
+-- end of line
+vim.opt.fileformat = "unix"
+vim.opt.fileformats = { "unix" }
