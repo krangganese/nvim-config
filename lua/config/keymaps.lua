@@ -1,29 +1,35 @@
 local keymap = vim.keymap.set
-local api = require("nvim-tree.api")
-local fzf = require("fzf-lua")
 
--- Telescope
-keymap("n", "<leader>ff", fzf.files, { desc = "Fzf find files in current working directory" })
-keymap("n", "<leader>fg", fzf.live_grep, { desc = "Fzf Live grep current project" })
-keymap("n", "<leader>fb", fzf.buffers, { desc = "Fzf file buffers" })
-keymap("n", "<leader>fh", fzf.helptags, { desc = "Fzf help tags" })
-keymap("n", "<leader>fk", fzf.keymaps, { desc = "Fzf keymaps" })
-keymap("n", "<leader>fw", fzf.grep_cword, { desc = "Fzf find current word" })
-keymap("n", "<leader>fk", fzf.grep_cWORD, { desc = "Fzf find current WORD" })
-keymap("n", "<C-p>", fzf.git_files, { desc = "Fzf git files" })
-
--- TS / JS
-keymap("n", "<leader>ef", ":w<CR>:!npx eslint --fix %<CR>:edit!<CR>", { noremap = true, silent = true })
-
--- Tree
-keymap("n", "<C-b>", api.tree.toggle, { desc = "Toggle file explorer" })
-keymap("n", "<leader>e", api.tree.focus, { desc = "Change focus to file explorer" })
-
--- General
-keymap("n", "<leader>qq", "<cmd>q!<CR>", { desc = "Force quit" })
+-- general
 keymap("n", "<leader>w", "<cmd>w<CR>", { desc = "Save file" })
+keymap("n", "<leader>qq", "<cmd>qa!<CR>", { desc = "Force quit" })
+keymap("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 keymap("n", "<C-v>", '"+p', { desc = "Paste from system clipboard" })
-keymap("i", "<C-v>", "<C-r>+", { desc = "Paste from system clipboard (insert mode)" })
+keymap("i", "<C-v>", "<C-r>+", { desc = "Paste from system clipboard (insert)" })
 
--- Diagnostics
-keymap("n", "gl", vim.diagnostic.open_float, { desc = "Open Diagnostics in Float" })
+-- window navigation
+keymap("n", "<C-h>", "<C-w><C-h>", { desc = "Focus left window" })
+keymap("n", "<C-l>", "<C-w><C-l>", { desc = "Focus right window" })
+keymap("n", "<C-j>", "<C-w><C-j>", { desc = "Focus lower window" })
+keymap("n", "<C-k>", "<C-w><C-k>", { desc = "Focus upper window" })
+
+-- buffers
+keymap("n", "<S-h>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+keymap("n", "<S-l>", "<cmd>bnext<CR>", { desc = "Next buffer" })
+keymap("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
+
+-- diagnostics
+keymap("n", "gl", vim.diagnostic.open_float, { desc = "Open diagnostics float" })
+
+-- bun
+keymap(
+  "n",
+  "<leader>br",
+  "<cmd>w<CR><cmd>botright 12split | term bun run %<CR>",
+  { desc = "Bun run file" }
+)
+keymap("n", "<leader>bt", "<cmd>botright 12split | term bun test<CR>", { desc = "Bun test" })
+keymap("n", "<leader>bi", "<cmd>botright 12split | term bun install<CR>", { desc = "Bun install" })
+
+-- terminal
+keymap("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })

@@ -1,49 +1,52 @@
--- leader key
+-- leader keys must be set before lazy.nvim loads
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
--- tampilkan nomor baris
-vim.opt.number = true -- tampilkan nomor baris
-vim.opt.relativenumber = true -- nomor relatif untuk navigasi cepat
+-- disable built-in netrw so nvim-tree handles directory buffers cleanly
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
--- indentasi
-vim.opt.tabstop = 2 -- lebar tab = 2 spasi
-vim.opt.shiftwidth = 2 -- indentasi otomatis = 2 spasi
-vim.opt.expandtab = true -- konversi tab jadi spasi
-vim.opt.smartindent = true -- indentasi otomatis yang cerdas
+-- line numbers for quick vertical jumps
+vim.opt.number = true
+vim.opt.relativenumber = true
+
+-- 2-space indentation (standard for Dart, TypeScript, and Lua)
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.smartindent = true
 vim.opt.autoindent = true
 
--- tampilan
-vim.opt.termguicolors = true -- aktifkan warna GUI
-vim.opt.cursorline = true -- garis bawah kursor
-vim.opt.signcolumn = "yes" -- kolom untuk ikon LSP/diff
-vim.opt.scrolloff = 8 -- padding baris atas/bawah saat scroll
-vim.opt.wrap = false -- jangan potong baris panjang (no word wrap)
+-- UI & layout
+vim.opt.termguicolors = true
+vim.opt.cursorline = true
+vim.opt.signcolumn = "yes" -- keep signcolumn open to prevent text shifting on diagnostics
+vim.opt.scrolloff = 8 -- keep context lines visible above/below cursor
+vim.opt.sidescrolloff = 8
+vim.opt.wrap = false
+vim.opt.winborder = "rounded"
 
--- pencarian
-vim.opt.ignorecase = true -- pencarian tidak case-sensitive
-vim.opt.smartcase = true -- case-sensitive jika ada huruf kapital
-vim.opt.incsearch = true -- tampilkan hasil pencarian langsung
-vim.opt.hlsearch = false -- jangan highlight semua hasil
+-- case-insensitive search unless capital letters are used
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.incsearch = true
+vim.opt.hlsearch = false
 
--- clipboard & file
-vim.opt.clipboard = "unnamedplus" -- gunakan clipboard sistem
-vim.opt.undofile = true -- aktifkan undo history persistensi
-vim.opt.swapfile = false -- nonaktifkan file swap
+-- sync with system clipboard & persist undo history across sessions
+vim.opt.clipboard = "unnamedplus"
+vim.opt.undofile = true
+vim.opt.swapfile = false
 vim.opt.backup = false
 
--- waktu
-vim.opt.timeoutlen = 300 -- waktu tunggu kombinasi mapping
-vim.opt.updatetime = 250 -- waktu tunggu untuk update (misal LSP)
+-- faster key sequence & CursorHold trigger for LSP highlights
+vim.opt.timeoutlen = 300
+vim.opt.updatetime = 200
 
--- mouse dan split
-vim.opt.mouse = "a" -- aktifkan mouse
-vim.opt.splitbelow = true -- split horizontal di bawah
-vim.opt.splitright = true -- split vertikal di kanan
+-- intuitive split directions
+vim.opt.mouse = "a"
+vim.opt.splitbelow = true
+vim.opt.splitright = true
 
--- floating window
-vim.opt.winborder = "rounded" -- default border untuk semua floating windows
-
--- end of line
+-- LF line endings
 vim.opt.fileformat = "unix"
 vim.opt.fileformats = { "unix" }

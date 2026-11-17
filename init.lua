@@ -1,9 +1,5 @@
-require("config.lazy")
-require("config.file-explorer").setup()
-require("config.theme").setup()
-require("config.lsp").setup()
-require("config.autoformat").setup()
-require("config.hardtime").setup()
-require("config.mini").setup()
+-- load options and keymaps before plugins so leader mappings are registered first
 require("config.options")
 require("config.keymaps")
+require("config.autocmds")
+require("config.lazy")
