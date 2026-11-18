@@ -50,3 +50,16 @@ vim.opt.splitright = true
 -- LF line endings
 vim.opt.fileformat = "unix"
 vim.opt.fileformats = { "unix" }
+
+-- register local Flutter & Android SDK in ~/development for LSP and emulator runners
+local home = vim.fn.expand("~")
+local android_home = home .. "/development/android-sdk"
+vim.env.ANDROID_HOME = android_home
+vim.env.ANDROID_SDK_ROOT = android_home
+vim.env.PATH = table.concat({
+  home .. "/development/flutter/bin",
+  android_home .. "/cmdline-tools/latest/bin",
+  android_home .. "/platform-tools",
+  android_home .. "/emulator",
+  vim.env.PATH,
+}, ":")
