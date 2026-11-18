@@ -135,7 +135,7 @@ return {
       },
       decorations = {
         statusline = {
-          app_version = true,
+          app_version = false,
           device = true,
           project_config = false,
         },
@@ -174,5 +174,8 @@ return {
         },
       },
     })
+
+    -- initialize flutter-tools user commands immediately once lazy.nvim loads this spec
+    vim.api.nvim_exec_autocmds("BufEnter", { group = "FlutterToolsGroup", pattern = "*.dart" })
   end,
 }
